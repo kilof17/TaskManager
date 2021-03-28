@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,6 +33,30 @@ namespace TaskManager.Repositories
             return _context.Quests.Find(id);
         }
 
+        public void MarkQuestAsFinished(Quest quest)
+        {
+            FinishedQuest finished = new FinishedQuest
+            {
+                DoneTime = DateTime.Now.ToString("HH:mm:ss"),
+
+                //TODO: add identity   Users=
+                Name = quest.Name,
+                Description = quest.Description,
+                AddTime = quest.AddTime,
+                AddDate = quest.AddDate,
+                Points = quest.Points
+            };
+
+            _context.FinishedQuests.Add(finished);
+        }
+
+        public void RevertQuestInProgressFlag(int id)
+        {
+            var quest = _context.Quests.Find(id);
+            bool revert = !quest.InProgress;
+            quest.InProgress = revert;
+        }
+
         public void RemoveQuest(int id)
         {
             var taskToRemove = _context.Quests.Where(p => p.Id == id).FirstOrDefault();
@@ -46,9 +71,10 @@ namespace TaskManager.Repositories
             return _context.SaveChanges() >= 0;
         }
 
-        public void UpdateQuest(Quest task)
+        public void UpdateQuest(int id, Quest task)
         {
-            throw new NotImplementedException();
+            task.Id = id;
+            _context.Entry(task).State = EntityState.Modified;
         }
     }
 }

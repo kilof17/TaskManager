@@ -33,7 +33,8 @@ namespace TaskManager
             services.AddDbContext<TaskManagerDbContext>(opt => opt.UseSqlServer
             (Configuration.GetConnectionString("TaskManagerConnection")));
 
-            services.AddScoped<IQuestRepository, QuestsRepository>();
+            services.AddScoped<IQuestRepository, MockQuestRopository>();
+            services.AddScoped<IFinishedQuestsRepository, MockFinishedQuestsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

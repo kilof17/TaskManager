@@ -11,10 +11,21 @@ namespace TaskManager.Models
         [Required]
         public string Description { get; set; }
 
+        /// <summary>
+        /// The time when quest was added
+        /// </summary>
         [Required]
-        [Timestamp]
-        public DateTime AddTimestamp { get; set; } // task add time
+        public string AddTime { get; set; }
 
+        /// <summary>
+        /// The date when quest was added
+        /// </summary>
+        [Required]
+        public string AddDate { get; set; }
+
+        /// <summary>
+        /// Number of points to get for finish the quest
+        /// </summary>
         [Required]
         [Range(1, 10)]
         public int Points { get; set; }

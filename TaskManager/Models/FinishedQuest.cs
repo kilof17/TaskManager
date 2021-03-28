@@ -9,8 +9,10 @@ namespace TaskManager.Models
         public int Id { get; set; }
 
         [Required]
-        [Timestamp]
-        public DateTime DoneTimestamp { get; set; }
+        public string DoneTime { get; set; }
+
+        [Required]
+        public string DoneDate { get; set; }
 
         public virtual User Users { get; set; }
     }

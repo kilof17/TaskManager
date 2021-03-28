@@ -11,10 +11,14 @@ namespace TaskManager.Interfaces
 
         void RemoveQuest(int id);
 
-        void UpdateQuest(Quest task);
+        void UpdateQuest(int id, Quest task);
 
         IEnumerable<Quest> GetAllQuests();
 
         Quest GetQuest(int id);
+
+        void MarkQuestAsFinished(Quest quest);
+
+        void RevertQuestInProgressFlag(int id);
     }
 }
