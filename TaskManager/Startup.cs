@@ -1,18 +1,18 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TaskManager.Data;
 using TaskManager.Repositories;
 using TaskManager.Interfaces;
+using TaskManager.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using TaskManager.Repositories.SQL;
 
 namespace TaskManager
 {
@@ -33,6 +33,33 @@ namespace TaskManager
             services.AddDbContext<TaskManagerDbContext>(opt => opt.UseSqlServer
             (Configuration.GetConnectionString("TaskManagerConnection")));
 
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+             {
+                 options.Password.RequireDigit = true;
+                 options.Password.RequireLowercase = true;
+                 options.Password.RequiredLength = 8;
+             }).AddEntityFrameworkStores<TaskManagerDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(auth =>
+            {
+                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration["AuthorizationSettings:ValidAudience"],
+                    ValidIssuer = Configuration["AuthorizationSettings:ValidIssuer"],
+                    RequireExpirationTime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AuthorizationSettings:Key"])),
+                    ValidateIssuerSigningKey = true
+                };
+            });
+
+            services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IQuestRepository, MockQuestRopository>();
             services.AddScoped<IFinishedQuestsRepository, MockFinishedQuestsRepository>();
         }
@@ -47,6 +74,7 @@ namespace TaskManager
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -7,11 +7,11 @@ namespace TaskManager.Models
     {
         [Key]
         [ForeignKey("Users")]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public bool ReciveNewTaskAddedEmail { get; set; }
 
         [Required]
-        public virtual User Users { get; set; }
+        public virtual ApplicationUser Users { get; set; }
     }
 }

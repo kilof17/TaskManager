@@ -15,6 +15,6 @@ namespace TaskManager.Models
         public string GroupName { get; set; }
 
         public virtual ICollection<Quest> Quests { get; set; }
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<ApplicationUser> AspNetUsers { get; set; }
     }
 }

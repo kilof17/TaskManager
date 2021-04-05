@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TaskManager.Interfaces;
 using TaskManager.Models;
 
@@ -10,6 +8,7 @@ namespace TaskManager.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class QuestsController : ControllerBase
     {
         private readonly IQuestRepository _questRepository;

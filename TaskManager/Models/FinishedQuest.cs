@@ -14,6 +14,6 @@ namespace TaskManager.Models
         [Required]
         public string DoneDate { get; set; }
 
-        public virtual User Users { get; set; }
+        public virtual ApplicationUser Users { get; set; }
     }
 }

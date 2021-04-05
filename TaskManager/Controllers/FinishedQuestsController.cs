@@ -22,10 +22,26 @@ namespace TaskManager.Controllers
 
         // GET: finishedquests/
         [HttpGet]
-        public ActionResult<IEnumerable<FinishedQuest>> Get()
+        public ActionResult<IEnumerable<FinishedQuest>> Get() //TODO: acces only for admin
         {
             var allQuests = _finishedQuestRepository.GetAllFinishedQuests();
             return Ok(allQuests);
+        }
+
+        // GET: finishedquests/{userId}
+        [HttpGet("{userId}")]
+        public ActionResult<IEnumerable<FinishedQuest>> Get(string userId)
+        {
+            var filteredQuests = _finishedQuestRepository.GetUserFinishedQuests(userId);
+            return Ok(filteredQuests);
+        }
+
+        // DELETE: finishedquests/{id}
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
+        {
+            _finishedQuestRepository.RemoveFinishedQuest(id);
+            return Ok();
         }
     }
 }

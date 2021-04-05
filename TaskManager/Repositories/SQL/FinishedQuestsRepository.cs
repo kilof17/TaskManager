@@ -12,5 +12,15 @@ namespace TaskManager.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<FinishedQuest> GetUserFinishedQuests(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveFinishedQuest(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
