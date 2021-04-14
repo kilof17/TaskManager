@@ -9,10 +9,7 @@ namespace TaskManager.Models
         public int Id { get; set; }
 
         [Required]
-        public string DoneTime { get; set; }
-
-        [Required]
-        public string DoneDate { get; set; }
+        public DateTime Done_ISO8601 { get; set; }
 
         public virtual ApplicationUser Users { get; set; }
     }

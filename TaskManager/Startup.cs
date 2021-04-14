@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TaskManager.Repositories.SQL;
+using System;
 
 namespace TaskManager
 {
@@ -29,7 +30,6 @@ namespace TaskManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
             services.AddDbContext<TaskManagerDbContext>(opt => opt.UseSqlServer
             (Configuration.GetConnectionString("TaskManagerConnection")));
 
@@ -39,6 +39,7 @@ namespace TaskManager
                  options.Password.RequireLowercase = true;
                  options.Password.RequiredLength = 8;
              }).AddEntityFrameworkStores<TaskManagerDbContext>()
+                .AddRoles<IdentityRole>()
                 .AddDefaultTokenProviders();
 
             services.AddAuthentication(auth =>
@@ -55,12 +56,30 @@ namespace TaskManager
                     ValidIssuer = Configuration["AuthorizationSettings:ValidIssuer"],
                     RequireExpirationTime = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AuthorizationSettings:Key"])),
-                    ValidateIssuerSigningKey = true
+                    ValidateIssuerSigningKey = true,
                 };
+                options.SaveToken = true;// TODO: Append line
             });
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1",
+                   new Microsoft.OpenApi.Models.OpenApiInfo
+                   {
+                       Title = "TaskManager",
+                       Description = "TaskManager documentation",
+                       Version = "v1"
+                   });
+
+                options.EnableAnnotations();
+            });
+
+            services.AddTransient<IMailService, MailService>();
+            services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IUsersRepository, UsersRepository>();
-            services.AddScoped<IQuestRepository, MockQuestRopository>();
+            services.AddScoped<IQuestRepository, QuestsRepository>();
             services.AddScoped<IFinishedQuestsRepository, MockFinishedQuestsRepository>();
         }
 
@@ -72,7 +91,10 @@ namespace TaskManager
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpsRedirection();
+
             app.UseRouting();
+            app.UseStaticFiles(); // wwwroot folder access
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -81,6 +103,11 @@ namespace TaskManager
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger();
+
+            // http://localhost/swagger/
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("v1/swagger.json", "TaskManager"); });
         }
     }
 }

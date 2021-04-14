@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TaskManager.Models;
 
 namespace TaskManager.Repositories
 {
     public interface IFinishedQuestsRepository
     {
-        IEnumerable<FinishedQuest> GetAllFinishedQuests();
+        Task<IEnumerable<FinishedQuest>> GetAllFinishedQuestsAsync();
 
-        IEnumerable<FinishedQuest> GetUserFinishedQuests(string userId);
+        Task<IEnumerable<FinishedQuest>> GetUserFinishedQuestsAsync(string userId);
 
-        void RemoveFinishedQuest(int id);
+        Task<bool> RemoveFinishedQuestAsync(int id);
     }
 }

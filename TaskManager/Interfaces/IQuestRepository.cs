@@ -1,24 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using TaskManager.DTOs;
 using TaskManager.Models;
 
 namespace TaskManager.Interfaces
 {
     public interface IQuestRepository
     {
-        bool SaveChanges();
+        Task<bool> SaveChangesAsync();
 
-        void CreateQuest(Quest task);
+        void CreateQuestAsync(Quest quest);
 
-        void RemoveQuest(int id);
+        Task<ApiResponse> RemoveQuestAsync(int id);
 
-        void UpdateQuest(int id, Quest task);
+        void UpdateQuest(CreateQuest updateQuest);
 
-        IEnumerable<Quest> GetAllQuests();
+        Task<IEnumerable<Quest>> GetAllQuestsAsync();
 
-        Quest GetQuest(int id);
+        Task<Quest> GetQuestByIdAsync(int id);
 
-        void MarkQuestAsFinished(Quest quest);
+        Task<ApiResponse> UnmarkQuestFinishedAsync(int id);
 
-        void RevertQuestInProgressFlag(int id);
+        Task<ApiResponse> MarkQuestAsFinishedAsync(int id);
+
+        Task<ApiResponse> UnmarkQuestInProgressAsync(int id);
+
+        Task<ApiResponse> MarkQuestInProgressAsync(int id);
     }
 }

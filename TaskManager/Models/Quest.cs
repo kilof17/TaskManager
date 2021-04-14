@@ -9,19 +9,11 @@ namespace TaskManager.Models
         [Key]
         public int Id { get; set; }
 
-        /// <summary>
-        /// The flag to mark quest as task in progress
-        /// </summary>
         [Required]
-        public bool InProgress { get; set; } // TODO: task is in the progress, can be canceled
+        public bool InProgress { get; set; }
 
-        public string ExpiryTime { get; set; }
+        public DateTime Expiry_ISO8601 { get; set; }
 
-        public string ExpiryDate { get; set; }
-
-        /// <summary>
-        /// Flag to mark task like out of date
-        /// </summary>
         [Required]
         public bool IsItExpiried { get; set; } // TODO: Possiblity restore task -> setup new expiry date and time
 

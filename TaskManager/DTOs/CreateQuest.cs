@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace TaskManager.Models
+namespace TaskManager.DTOs
 {
-    public abstract class QuestBase
+    public class CreateQuest
     {
         [Required]
         public string Name { get; set; }
@@ -12,10 +15,8 @@ namespace TaskManager.Models
         public string Description { get; set; }
 
         [Required]
-        public DateTime Added_ISO8601 { get; set; }
-
-        [Required]
-        [Range(1, 10)]
         public int Points { get; set; }
+
+        public DateTime Expiry_ISO8601 { get; set; }
     }
 }

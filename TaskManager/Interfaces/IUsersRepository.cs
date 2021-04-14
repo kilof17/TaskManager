@@ -9,8 +9,10 @@ namespace TaskManager.Interfaces
 {
     public interface IUsersRepository
     {
-        Task<UserManagerResponse> RegisterUserAsync(UserRegistration user);
+        Task<ApiResponse> RegisterUserAsync(UserRegistration user, string appUrl);
 
-        Task<UserManagerResponse> LoginAsync(UserLogin model);
+        Task<ApiResponse> LoginAsync(UserLogin model);
+
+        public Task<ApiResponse> ConfirmEmailAsync(string userId, string token);
     }
 }

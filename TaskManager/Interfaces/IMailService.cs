@@ -2,7 +2,7 @@
 
 namespace TaskManager.Interfaces
 {
-    internal interface IMailService
+    public interface IMailService
     {
         public Task SendEmailAsync(string toEmail, string subject, string content);
     }

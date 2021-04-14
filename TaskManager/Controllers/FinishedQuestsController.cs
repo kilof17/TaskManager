@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,10 @@ namespace TaskManager.Controllers
 
         // GET: finishedquests/
         [HttpGet]
-        public ActionResult<IEnumerable<FinishedQuest>> Get() //TODO: acces only for admin
+        [Authorize(Roles = "Admin")]
+        public ActionResult<IEnumerable<FinishedQuest>> Get()
         {
-            var allQuests = _finishedQuestRepository.GetAllFinishedQuests();
+            var allQuests = _finishedQuestRepository.GetAllFinishedQuestsAsync();
             return Ok(allQuests);
         }
 
@@ -32,15 +34,15 @@ namespace TaskManager.Controllers
         [HttpGet("{userId}")]
         public ActionResult<IEnumerable<FinishedQuest>> Get(string userId)
         {
-            var filteredQuests = _finishedQuestRepository.GetUserFinishedQuests(userId);
+            var filteredQuests = _finishedQuestRepository.GetUserFinishedQuestsAsync(userId);
             return Ok(filteredQuests);
         }
 
         // DELETE: finishedquests/{id}
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _finishedQuestRepository.RemoveFinishedQuest(id);
+            _finishedQuestRepository.RemoveFinishedQuestAsync(id);
             return Ok();
         }
     }
