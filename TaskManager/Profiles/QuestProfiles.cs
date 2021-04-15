@@ -10,6 +10,7 @@ namespace TaskManager.Profiles
         {
             CreateMap<CreateQuest, Quest>();
             CreateMap<Quest, DisplayQuest>();
+            CreateMap<DisplayQuest, Quest>();
         }
     }
 }

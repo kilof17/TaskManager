@@ -92,12 +92,19 @@ namespace TaskManager.Repositories
             var result = await _context.Quests.FindAsync(id);
 
             if (result.InProgress == true)
+            {
                 result.InProgress = false;
+                return new ApiResponse
+                {
+                    Message = "Task mark as is not in progress",
+                    IsSuccess = true
+                };
+            }
 
             return new ApiResponse
             {
                 Message = "Task already marked as is not progress",
-                IsSuccess = true
+                IsSuccess = false
             };
         }
 
@@ -110,12 +117,19 @@ namespace TaskManager.Repositories
             var result = await _context.Quests.FindAsync(id);
 
             if (result.InProgress == false)
+            {
                 result.InProgress = true;
+                return new ApiResponse
+                {
+                    Message = "Task marked as in progress",
+                    IsSuccess = true
+                };
+            }
 
             return new ApiResponse
             {
-                Message = "Task already marked as in progress",
-                IsSuccess = true
+                Message = "Task already marked as is progress",
+                IsSuccess = false
             };
         }
 
