@@ -13,3 +13,6 @@ asp.net core 3.1 rest api
 - AutoMapper
 - SendGrid
 - Dependency Injection
+- JwtBearer
+- Swagger
+- SwaggerAnnotations
