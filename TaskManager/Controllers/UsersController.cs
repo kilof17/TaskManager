@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TaskManager.DTOs;
 using TaskManager.Interfaces;
@@ -9,6 +12,7 @@ using TaskManager.Models;
 
 namespace TaskManager.Controllers
 {
+    [Authorize(Roles = "Admin , User")]
     [Route("[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -16,20 +20,24 @@ namespace TaskManager.Controllers
         private readonly IUsersRepository _usersRepository;
         private readonly IMailService _mailService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
 
         public UsersController(IUsersRepository usersRepository,
                                IMailService mailService,
-                               UserManager<ApplicationUser> userManager)
+                               UserManager<ApplicationUser> userManager,
+                               IMapper mapper)
         {
             _usersRepository = usersRepository;
             _mailService = mailService;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         #region Registration
 
         // POST: /users/register
         [HttpPost("Register")]
+        [AllowAnonymous]
         [SwaggerOperation("Register new user")]
         [SwaggerResponse(200, "Regirstation success")]
         [SwaggerResponse(400, "Failure, returns errors message")]
@@ -53,6 +61,7 @@ namespace TaskManager.Controllers
 
         //POST: /user/login
         [HttpPost("Login")]
+        [AllowAnonymous]
         [SwaggerOperation(Summary = "Login to app", Description = "Token  returns in key message. Expiry after 90 days")]
         [SwaggerResponse(200, "Login successfully. Token returns in key message")]
         [SwaggerResponse(400, "Wrong login/password or model is not valid. Returns error message ")]
@@ -81,6 +90,7 @@ namespace TaskManager.Controllers
 
         //GET: users/confirmemail?userid&token
         [HttpGet("ConfirmEmail")]
+        [AllowAnonymous]
         [SwaggerOperation("Redirect to simply HTML site with confirm email message")]
         [SwaggerResponse(200, "Redirect to confirm site")]
         [SwaggerResponse(400, "Returns errors message")]
@@ -100,6 +110,25 @@ namespace TaskManager.Controllers
         }
 
         #endregion Confirm Email
+
+        #region Get user data
+
+        //GET: /users/mydata
+        [HttpGet("MyData")]
+        [SwaggerOperation("Returns user data")]
+        [SwaggerResponse(200, "User data")]
+        public async Task<IActionResult> GetUserData() //TODO: check
+        {
+            var claimId = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            var user = await _userManager.FindByIdAsync(claimId.Value);
+            if (user != null)
+                return Ok(_mapper.Map<DisplayUser>(user));
+
+            return NotFound();
+        }
+
+        #endregion Get user data
 
         #region Get Application Url
 

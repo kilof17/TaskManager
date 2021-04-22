@@ -26,12 +26,11 @@ namespace TaskManager
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
             services.AddDbContext<TaskManagerDbContext>(opt => opt.UseSqlServer
-            (Configuration.GetConnectionString("TaskManagerConnection")));
+            (Configuration.GetConnectionString("TaskManagerConnection")), ServiceLifetime.Transient);
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
              {
@@ -58,7 +57,7 @@ namespace TaskManager
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AuthorizationSettings:Key"])),
                     ValidateIssuerSigningKey = true,
                 };
-                options.SaveToken = true;// TODO: Append line
+                options.SaveToken = true;
             });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -83,12 +82,17 @@ namespace TaskManager
             services.AddScoped<IFinishedQuestsRepository, MockFinishedQuestsRepository>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app,
+                              IWebHostEnvironment env,
+                              TaskManagerDbContext context,
+                              UserManager<ApplicationUser> userManager,
+                              RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                InitializeDb.SeedDatabase(context, userManager, roleManager);
             }
 
             app.UseHttpsRedirection();
@@ -106,8 +110,7 @@ namespace TaskManager
 
             app.UseSwagger();
 
-            // http://localhost/swagger/
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("v1/swagger.json", "TaskManager"); });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("v1/swagger.json", "TaskManager"); }); // http://localhost/swagger
         }
     }
 }

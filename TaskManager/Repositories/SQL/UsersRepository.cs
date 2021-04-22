@@ -10,6 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManager.Data;
 using TaskManager.DTOs;
 using TaskManager.Interfaces;
 using TaskManager.Models;
@@ -19,18 +20,26 @@ namespace TaskManager.Repositories.SQL
     public class UsersRepository : IUsersRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private IConfiguration _configuration;
-        private IMailService _mailService;
-        private RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
+        private readonly IMailService _mailService;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly TaskManagerDbContext _context;
+
+        public RoleManager<IdentityRole> RoleManager => _roleManager;
 
         #region ctor
 
-        public UsersRepository(UserManager<ApplicationUser> userManager, IConfiguration configuration, IMailService mailService, RoleManager<IdentityRole> roleManager)
+        public UsersRepository(UserManager<ApplicationUser> userManager,
+                               IConfiguration configuration,
+                               IMailService mailService,
+                               RoleManager<IdentityRole> roleManager,
+                               TaskManagerDbContext context)
         {
             _userManager = userManager;
             _configuration = configuration;
             _mailService = mailService;
             _roleManager = roleManager;
+            _context = context;
         }
 
         #endregion ctor
@@ -189,5 +198,25 @@ namespace TaskManager.Repositories.SQL
         }
 
         #endregion Confirm Email Adress
+
+        #region Get user groups
+
+        public async Task<IEnumerable<Group>> GetUserGroupsAsync(string userId)
+        {
+            var result = await _context.Users.FindAsync(userId);
+            return result.Groups.OrderBy(x => x.GroupName);
+        }
+
+        #endregion Get user groups
+
+        #region Get user finished tasks
+
+        public async Task<IEnumerable<FinishedQuest>> GetUserFinishedQuestsAsync(string userId)
+        {
+            var result = await _context.Users.FindAsync(userId);
+            return result.FinishedQuests.OrderBy(x => x.Done_ISO8601);
+        }
+
+        #endregion Get user finished tasks
     }
 }

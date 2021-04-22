@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TaskManager.Data;
 using TaskManager.Interfaces;
 using TaskManager.Models;
 
@@ -10,8 +11,8 @@ namespace TaskManager.Repositories.SQL
 {
     public class AdminService : IAdminService
     {
-        private UserManager<ApplicationUser> _userManager;
-        private RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AdminService(RoleManager<IdentityRole> roleManager,
                             UserManager<ApplicationUser> userManager)
@@ -82,7 +83,7 @@ namespace TaskManager.Repositories.SQL
 
         #region Get all user roles
 
-        public async Task<IEnumerable<string>> GetAllUsersRolesAsync(string userId)
+        public async Task<IEnumerable<string>> GetUserRolesAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -102,15 +103,5 @@ namespace TaskManager.Repositories.SQL
         }
 
         #endregion Get role by id
-
-        #region Get user by id
-
-        public async Task<ApplicationUser> GetUserByIdAsync(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            return user;
-        }
-
-        #endregion Get user by id
     }
 }

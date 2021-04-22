@@ -16,16 +16,9 @@ namespace TaskManager.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<FinishedQuest>> GetAllFinishedQuestsAsync()
+        public Task<IEnumerable<FinishedQuest>> GetAllFinishedQuestsAsync()
         {
-            //return await _context.FinishedQuests // TODO: finish
-            var finishedQuests = _context.FinishedQuests.Select(p => new FinishedQuest
-            {
-                Id = p.Id,
-                //AddDate = p.AddDate,
-                //AddTime = p.AddTime,
-            });
-            return finishedQuests;
+            throw new NotImplementedException();
         }
 
         public Task<IEnumerable<FinishedQuest>> GetUserFinishedQuestsAsync(string userId)
@@ -33,7 +26,7 @@ namespace TaskManager.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> RemoveFinishedQuestAsync(int id)
+        public Task<bool> RemoveFinishedQuestAsync(string id)
         {
             throw new NotImplementedException();
         }

@@ -15,6 +15,8 @@ namespace TaskManager.Models
         [StringLength(30)]
         public string LastName { get; set; }
 
+        public int ScoredPoints { get; set; }
+
         public virtual ICollection<FinishedQuest> FinishedQuests { get; set; }
         public virtual ICollection<Group> Groups { get; set; }
         public virtual Setup Setups { get; set; }

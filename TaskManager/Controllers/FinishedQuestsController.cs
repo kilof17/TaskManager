@@ -14,7 +14,7 @@ namespace TaskManager.Controllers
     [ApiController]
     public class FinishedQuestsController : ControllerBase
     {
-        private IFinishedQuestsRepository _finishedQuestRepository;
+        private readonly IFinishedQuestsRepository _finishedQuestRepository;
 
         public FinishedQuestsController(IFinishedQuestsRepository finishedQuestRepository)
         {
@@ -24,10 +24,10 @@ namespace TaskManager.Controllers
         // GET: finishedquests/
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public ActionResult<IEnumerable<FinishedQuest>> Get()
+        public async Task<ActionResult<IEnumerable<FinishedQuest>>> Get()
         {
-            var allQuests = _finishedQuestRepository.GetAllFinishedQuestsAsync();
-            return Ok(allQuests);
+            var result = await _finishedQuestRepository.GetAllFinishedQuestsAsync();
+            return Ok(result);
         }
 
         // GET: finishedquests/{userId}
@@ -40,7 +40,7 @@ namespace TaskManager.Controllers
 
         // DELETE: finishedquests/{id}
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             _finishedQuestRepository.RemoveFinishedQuestAsync(id);
             return Ok();

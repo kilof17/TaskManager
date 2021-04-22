@@ -15,8 +15,6 @@ namespace TaskManager.Interfaces
 
         Task<ApiResponse> AddUserToRoleAsync(string userId, string roleName);
 
-        Task<IEnumerable<string>> GetAllUsersRolesAsync(string userId);
-
-        public Task<ApplicationUser> GetUserByIdAsync(string id);
+        Task<IEnumerable<string>> GetUserRolesAsync(string userId);
     }
 }

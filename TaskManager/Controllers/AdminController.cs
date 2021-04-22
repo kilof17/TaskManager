@@ -6,6 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 using TaskManager.DTOs;
 using TaskManager.Interfaces;
+using TaskManager.Models;
 
 namespace TaskManager.Controllers
 {
@@ -15,14 +16,20 @@ namespace TaskManager.Controllers
     [SwaggerTag("Require Admin role")]
     public class AdminController : ControllerBase
     {
-        private IAdminService _adminService;
-        private IMapper _mapper;
+        private readonly IAdminService _adminService;
+        private readonly IMapper _mapper;
+        private readonly IUsersRepository _usersRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public AdminController(IAdminService adminService,
-                               IMapper mapper)
+                               IMapper mapper,
+                               UserManager<ApplicationUser> userManager,
+                               IUsersRepository usersRepository)
         {
             _adminService = adminService;
             _mapper = mapper;
+            _usersRepository = usersRepository;
+            _userManager = userManager;
         }
 
         #region Get role by id
@@ -86,7 +93,7 @@ namespace TaskManager.Controllers
         [SwaggerResponse(404, "Wrong id")]
         public async Task<IActionResult> GetRoles(string id)
         {
-            var userRoles = await _adminService.GetAllUsersRolesAsync(id);
+            var userRoles = await _adminService.GetUserRolesAsync(id);
             if (userRoles != null)
                 return Ok(userRoles);
 
@@ -94,6 +101,24 @@ namespace TaskManager.Controllers
         }
 
         #endregion Get all user roles
+
+        #region Get all user groups
+
+        //GET: /admin/user/groups/{id}
+        [HttpGet("/Admin/User/Groups/{id}")]
+        [SwaggerOperation("Return all user groups for given user id ")]
+        [SwaggerResponse(200, "Return list of goroups")]
+        [SwaggerResponse(404, "Wrong id")]
+        public async Task<IActionResult> GetGroups(string id)
+        {
+            var userRoles = await _usersRepository.GetUserGroupsAsync(id);
+            if (userRoles != null)
+                return Ok(userRoles);
+
+            return NotFound();
+        }
+
+        #endregion Get all user groups
 
         #region Get user by id
 
@@ -104,7 +129,7 @@ namespace TaskManager.Controllers
         [SwaggerResponse(404, "Wrong id")]
         public async Task<IActionResult> GetUserById(string id)
         {
-            var user = await _adminService.GetUserByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
             if (user != null)
                 return Ok(_mapper.Map<DisplayUser>(user));
 

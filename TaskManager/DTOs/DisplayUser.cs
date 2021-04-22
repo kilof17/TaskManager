@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
-using TaskManager.Models;
-
-namespace TaskManager.DTOs
+﻿namespace TaskManager.DTOs
 {
     public class DisplayUser
     {
@@ -13,8 +9,7 @@ namespace TaskManager.DTOs
 
         public string LastName { get; set; }
 
-        public virtual ICollection<FinishedQuest> FinishedQuests { get; set; }
-        public virtual ICollection<Group> Groups { get; set; }
-        public virtual ICollection<IdentityRole> Roles { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

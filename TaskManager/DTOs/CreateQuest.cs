@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TaskManager.DTOs
 {
@@ -17,6 +15,8 @@ namespace TaskManager.DTOs
         [Required]
         public int Points { get; set; }
 
-        public DateTime Expiry_ISO8601 { get; set; }
+        public DateTime? Expiry_ISO8601 { get; set; }
+
+        public bool Persistent { get => !Expiry_ISO8601.HasValue; private set => Persistent = true; }
     }
 }

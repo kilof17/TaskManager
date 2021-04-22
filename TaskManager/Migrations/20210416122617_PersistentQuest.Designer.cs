@@ -10,8 +10,8 @@ using TaskManager.Data;
 namespace TaskManager.Migrations
 {
     [DbContext(typeof(TaskManagerDbContext))]
-    [Migration("20210414114718_refactoryCd")]
-    partial class refactoryCd
+    [Migration("20210416122617_PersistentQuest")]
+    partial class PersistentQuest
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,8 +26,8 @@ namespace TaskManager.Migrations
                     b.Property<string>("AspNetUsersId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("GroupsId")
-                        .HasColumnType("int");
+                    b.Property<string>("GroupsId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("AspNetUsersId", "GroupsId");
 
@@ -38,11 +38,11 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("GroupQuest", b =>
                 {
-                    b.Property<int>("GroupsId")
-                        .HasColumnType("int");
+                    b.Property<string>("GroupsId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("QuestsId")
-                        .HasColumnType("int");
+                    b.Property<string>("QuestsId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("GroupsId", "QuestsId");
 
@@ -257,10 +257,8 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("TaskManager.Models.FinishedQuest", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Added_ISO8601")
                         .HasColumnType("datetime2");
@@ -291,10 +289,8 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("TaskManager.Models.Group", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
@@ -307,10 +303,8 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("TaskManager.Models.Quest", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Added_ISO8601")
                         .HasColumnType("datetime2");
@@ -319,7 +313,7 @@ namespace TaskManager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Expiry_ISO8601")
+                    b.Property<DateTime?>("Expiry_ISO8601")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("InProgress")
@@ -331,6 +325,9 @@ namespace TaskManager.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Persistent")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Points")
                         .HasColumnType("int");

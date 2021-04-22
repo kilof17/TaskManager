@@ -40,14 +40,14 @@ namespace TaskManager.Repositories
 
         public async Task<IEnumerable<Quest>> GetAllQuestsAsync()
         {
-            return await _context.Quests.IgnoreAutoIncludes().ToListAsync();
+            return await _context.Quests.ToListAsync();
         }
 
         #endregion Get all quests
 
         #region Get quest by id
 
-        public async Task<Quest> GetQuestByIdAsync(int id)
+        public async Task<Quest> GetQuestByIdAsync(string id)
         {
             return await _context.Quests.FindAsync(id);
         }
@@ -56,7 +56,7 @@ namespace TaskManager.Repositories
 
         #region Remove quest
 
-        public async Task<ApiResponse> RemoveQuestAsync(int id)
+        public async Task<ApiResponse> RemoveQuestAsync(string id)
         {
             var taskToRemove = await _context.Quests.FindAsync(id);
             if (taskToRemove != null)
@@ -87,23 +87,31 @@ namespace TaskManager.Repositories
 
         #region Unmark quest in progress
 
-        public async Task<ApiResponse> UnmarkQuestInProgressAsync(int id)
+        public async Task<ApiResponse> UnmarkQuestInProgressAsync(string id)
         {
             var result = await _context.Quests.FindAsync(id);
 
-            if (result.InProgress == true)
+            if (result != null)
             {
-                result.InProgress = false;
+                if (result.InProgress == true)
+                {
+                    result.InProgress = false;
+                    return new ApiResponse
+                    {
+                        Message = "Task mark as is not in progress",
+                        IsSuccess = true
+                    };
+                }
+
                 return new ApiResponse
                 {
-                    Message = "Task mark as is not in progress",
+                    Message = "Task already marked as is not progress",
                     IsSuccess = true
                 };
             }
-
             return new ApiResponse
             {
-                Message = "Task already marked as is not progress",
+                Message = "User not found",
                 IsSuccess = false
             };
         }
@@ -112,23 +120,31 @@ namespace TaskManager.Repositories
 
         #region Mark as quest in progress
 
-        public async Task<ApiResponse> MarkQuestInProgressAsync(int id)
+        public async Task<ApiResponse> MarkQuestInProgressAsync(string id)
         {
             var result = await _context.Quests.FindAsync(id);
 
-            if (result.InProgress == false)
+            if (result != null)
             {
-                result.InProgress = true;
+                if (result.InProgress == false)
+                {
+                    result.InProgress = true;
+                    return new ApiResponse
+                    {
+                        Message = "Task mark as is in progress",
+                        IsSuccess = true
+                    };
+                }
+
                 return new ApiResponse
                 {
-                    Message = "Task marked as in progress",
+                    Message = "Task already marked as in progress",
                     IsSuccess = true
                 };
             }
-
             return new ApiResponse
             {
-                Message = "Task already marked as is progress",
+                Message = "User not found",
                 IsSuccess = false
             };
         }
@@ -137,7 +153,7 @@ namespace TaskManager.Repositories
 
         #region Unmark quest finished
 
-        public async Task<ApiResponse> UnmarkQuestFinishedAsync(int id)
+        public async Task<ApiResponse> UnmarkQuestFinishedAsync(string id)
         {
             var finishedQuest = await _context.FinishedQuests.FindAsync(id);
             if (finishedQuest == null)
@@ -162,7 +178,7 @@ namespace TaskManager.Repositories
 
         #region Mark quest as finished
 
-        public async Task<ApiResponse> MarkQuestAsFinishedAsync(int id)
+        public async Task<ApiResponse> MarkQuestAsFinishedAsync(string id)
         {
             var quest = await _context.Quests.FindAsync(id);
             if (quest == null)

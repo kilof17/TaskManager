@@ -10,15 +10,15 @@ using TaskManager.Data;
 namespace TaskManager.Migrations
 {
     [DbContext(typeof(TaskManagerDbContext))]
-    [Migration("20210403185806_updateModel")]
-    partial class updateModel
+    [Migration("20210415154726_IdFromIntToString")]
+    partial class IdFromIntToString
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("ApplicationUserGroup", b =>
@@ -26,8 +26,8 @@ namespace TaskManager.Migrations
                     b.Property<string>("AspNetUsersId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("GroupsId")
-                        .HasColumnType("int");
+                    b.Property<string>("GroupsId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("AspNetUsersId", "GroupsId");
 
@@ -38,11 +38,11 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("GroupQuest", b =>
                 {
-                    b.Property<int>("GroupsId")
-                        .HasColumnType("int");
+                    b.Property<string>("GroupsId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("QuestsId")
-                        .HasColumnType("int");
+                    b.Property<string>("QuestsId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("GroupsId", "QuestsId");
 
@@ -257,30 +257,18 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("TaskManager.Models.FinishedQuest", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AddDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Added_ISO8601")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DoneDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DoneTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Done_ISO8601")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -301,10 +289,8 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("TaskManager.Models.Group", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
@@ -317,28 +303,18 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("TaskManager.Models.Quest", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AddDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Added_ISO8601")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ExpiryDate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExpiryTime")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Expiry_ISO8601")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("InProgress")
                         .HasColumnType("bit");

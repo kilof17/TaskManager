@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TaskManager.Models
 {
     public class Group
     {
+        public Group()
+        {
+            this.Id = Guid.NewGuid().ToString();
+        }
+
         [Key]
-        public int Id { get; set; }
+        public string Id { get; private set; }
 
         [Required]
         public string GroupName { get; set; }

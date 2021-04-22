@@ -12,10 +12,8 @@ namespace TaskManager.Data
 
         public DbSet<Quest> Quests { get; set; }
         public DbSet<FinishedQuest> FinishedQuests { get; set; }
-        //public DbSet<Role> Roles { get; set; }
 
         public DbSet<Setup> Setups { get; set; }
-        //public DbSet<ApplicationUser> Users { get; set; }
 
         public DbSet<Group> Groups { get; set; }
     }

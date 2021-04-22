@@ -11,20 +11,20 @@ namespace TaskManager.Interfaces
 
         void CreateQuestAsync(Quest quest);
 
-        Task<ApiResponse> RemoveQuestAsync(int id);
+        Task<ApiResponse> RemoveQuestAsync(string id);
 
         void UpdateQuest(CreateQuest updateQuest);
 
         Task<IEnumerable<Quest>> GetAllQuestsAsync();
 
-        Task<Quest> GetQuestByIdAsync(int id);
+        Task<Quest> GetQuestByIdAsync(string id);
 
-        Task<ApiResponse> UnmarkQuestFinishedAsync(int id);
+        Task<ApiResponse> UnmarkQuestFinishedAsync(string id);
 
-        Task<ApiResponse> MarkQuestAsFinishedAsync(int id);
+        Task<ApiResponse> MarkQuestAsFinishedAsync(string id);
 
-        Task<ApiResponse> UnmarkQuestInProgressAsync(int id);
+        Task<ApiResponse> UnmarkQuestInProgressAsync(string id);
 
-        Task<ApiResponse> MarkQuestInProgressAsync(int id);
+        Task<ApiResponse> MarkQuestInProgressAsync(string id);
     }
 }

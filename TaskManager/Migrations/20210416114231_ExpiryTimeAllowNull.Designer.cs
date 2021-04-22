@@ -10,8 +10,8 @@ using TaskManager.Data;
 namespace TaskManager.Migrations
 {
     [DbContext(typeof(TaskManagerDbContext))]
-    [Migration("20210414113812_refactory")]
-    partial class refactory
+    [Migration("20210416114231_ExpiryTimeAllowNull")]
+    partial class ExpiryTimeAllowNull
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,8 +26,8 @@ namespace TaskManager.Migrations
                     b.Property<string>("AspNetUsersId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("GroupsId")
-                        .HasColumnType("int");
+                    b.Property<string>("GroupsId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("AspNetUsersId", "GroupsId");
 
@@ -38,11 +38,11 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("GroupQuest", b =>
                 {
-                    b.Property<int>("GroupsId")
-                        .HasColumnType("int");
+                    b.Property<string>("GroupsId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("QuestsId")
-                        .HasColumnType("int");
+                    b.Property<string>("QuestsId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("GroupsId", "QuestsId");
 
@@ -257,10 +257,8 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("TaskManager.Models.FinishedQuest", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Added_ISO8601")
                         .HasColumnType("datetime2");
@@ -269,13 +267,8 @@ namespace TaskManager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DoneDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DoneTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Done_ISO8601")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -296,10 +289,8 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("TaskManager.Models.Group", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
@@ -312,10 +303,8 @@ namespace TaskManager.Migrations
 
             modelBuilder.Entity("TaskManager.Models.Quest", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Added_ISO8601")
                         .HasColumnType("datetime2");
@@ -324,7 +313,7 @@ namespace TaskManager.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Expiry_ISO8601")
+                    b.Property<DateTime?>("Expiry_ISO8601")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("InProgress")

@@ -35,7 +35,7 @@ namespace TaskManager.Controllers
         public async Task<ActionResult<IEnumerable<DisplayQuest>>> Get()
         {
             var result = await _questRepository.GetAllQuestsAsync();
-            var allQuests = _mapper.Map<DisplayQuest>(result);
+            var allQuests = _mapper.Map<IEnumerable<DisplayQuest>>(result);
             return Ok(allQuests);
         }
 
@@ -44,12 +44,11 @@ namespace TaskManager.Controllers
         #region Get task by id
 
         // GET quests/{id}
-        [HttpGet("{id}")]
-        [ActionName("GetQuestById")]
+        [HttpGet("{id}", Name = "GetQuestById")]
         [SwaggerOperation(Summary = "Gets specified task", Description = "Gets specified task by id ")]
         [SwaggerResponse(200, "Resource found")]
         [SwaggerResponse(400, "Wrong id")]
-        public async Task<ActionResult<DisplayQuest>> Get(int id)
+        public async Task<ActionResult<DisplayQuest>> GetQuestById(string id)
         {
             var result = await _questRepository.GetQuestByIdAsync(id);
             var quest = _mapper.Map<DisplayQuest>(result);
@@ -64,23 +63,27 @@ namespace TaskManager.Controllers
         #region Create task
 
         // POST quests/
-        [SwaggerOperation(Summary = "Create task")]
         [HttpPost]
+        [SwaggerOperation(Summary = "Create task", Description = "When task expiry time and date are not set, task is marked as peristent ")]
+        [SwaggerResponse(201, "Task created")]
+        [SwaggerResponse(400, "Wrong data")]
         public async Task<IActionResult> Post([FromBody] CreateQuest createQuest)
         {
-            if (createQuest.Expiry_ISO8601 < DateTime.Now)
+            if (createQuest.Expiry_ISO8601 < DateTime.Now && createQuest.Expiry_ISO8601 != default(DateTime))
                 return BadRequest(new ApiResponse
                 {
-                    Message = "Wrong expiry date",
+                    Message = "Expiration date is older than added date",
                     IsSuccess = false
                 });
 
             var quest = _mapper.Map<Quest>(createQuest);
+
             _questRepository.CreateQuestAsync(quest);
             await _questRepository.SaveChangesAsync();
-            //TODO: change id format from int to string, in class quest add ctor with generate newGuid.ToString likie id
-            // return CreatedAtAction(nameof(GetQuestById), new { id = role.Id }, role);
-            return Ok();
+
+            var displayQuest = _mapper.Map<DisplayQuest>(quest);
+
+            return CreatedAtRoute(nameof(GetQuestById), new { id = displayQuest.Id }, displayQuest);
         }
 
         #endregion Create task
@@ -92,7 +95,7 @@ namespace TaskManager.Controllers
         [SwaggerOperation("Update task with specified id")]
         [SwaggerResponse(204, "Updated succesfully")]
         [SwaggerResponse(404, "Resource not found")]
-        public async Task<ActionResult> UpdateQuest(int id, [FromBody] CreateQuest updateQuest)
+        public async Task<ActionResult> UpdateQuest(string id, [FromBody] CreateQuest updateQuest)
         {
             var questFromRepo = await _questRepository.GetQuestByIdAsync(id);
             if (questFromRepo == null)
@@ -111,11 +114,17 @@ namespace TaskManager.Controllers
         //PUT quests/inprogress/{id}
         [HttpPut("InProgress/{id}")]
         [SwaggerOperation("Mark task as in progress")]
-        public async Task<ActionResult<Quest>> QuestInProgress(int id)
+        [SwaggerResponse(200, "Task marked as in progress")]
+        [SwaggerResponse(400, "User not found")]
+        public async Task<ActionResult<Quest>> QuestInProgress(string id)
         {
             var result = await _questRepository.MarkQuestInProgressAsync(id);
+
             if (result.IsSuccess)
-                return Ok();
+            {
+                await _questRepository.SaveChangesAsync();
+                return Ok(result);
+            }
             return BadRequest(result);
         }
 
@@ -123,14 +132,20 @@ namespace TaskManager.Controllers
 
         #region Task is not in progress
 
-        //PUT quests/inprogress/{id}
-        [HttpPut("InNotProgress/{id}")]
+        //PUT quests/notprogress/{id}
+        [HttpPut("NotProgress/{id}")]
         [SwaggerOperation("Mark specified task as is not in progress")]
-        public async Task<ActionResult<Quest>> QuestInNotProgress(int id)
+        [SwaggerResponse(200, "Task marked as is not in progress")]
+        [SwaggerResponse(400, "User not found")]
+        public async Task<ActionResult<Quest>> QuestInNotProgress(string id)
         {
             var result = await _questRepository.UnmarkQuestInProgressAsync(id);
+
             if (result.IsSuccess)
-                return Ok();
+            {
+                await _questRepository.SaveChangesAsync();
+                return Ok(result);
+            }
 
             return BadRequest(result);
         }
@@ -140,9 +155,9 @@ namespace TaskManager.Controllers
         #region Mark specified task as finished
 
         //PUT quests/markfinished/{id}
-        [HttpPut("MarkFinished/{id}")]
+        [HttpPut("MarkFinished/{id}")]  //TODO: Add ScoredPoints for user which finished quest. Group lider shoult approve finsh quest?
         [SwaggerOperation("Mark specified task as finished")]
-        public async Task<ActionResult<Quest>> FinishedQuest(int id)
+        public async Task<ActionResult<Quest>> FinishedQuest(string id)
         {
             var result = await _questRepository.MarkQuestAsFinishedAsync(id);
             if (result.IsSuccess)
@@ -156,9 +171,9 @@ namespace TaskManager.Controllers
         #region Back finished task to active quests
 
         //PUT quests/unmarkfinished/{id}
-        [HttpPut("UnmarkFinished/{id}")]
+        [HttpPut("UnmarkFinished/{id}")] //TODO: rollback form FinishedQuest set new Expiry_iso8601, substract poinst from user which (not)finisched quest
         [SwaggerOperation("Mark specified task as not finished yet")]
-        public async Task<ActionResult<Quest>> UnfinishedQuest(int id)
+        public async Task<ActionResult<Quest>> UnfinishedQuest(string id)
         {
             var result = await _questRepository.UnmarkQuestFinishedAsync(id);
             if (result.IsSuccess)
@@ -174,7 +189,7 @@ namespace TaskManager.Controllers
         // DELETE quests/{id}
         [HttpDelete("{id}")]
         [SwaggerOperation("Delete task")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(string id)
         {
             var result = await _questRepository.RemoveQuestAsync(id);
             if (result.IsSuccess)

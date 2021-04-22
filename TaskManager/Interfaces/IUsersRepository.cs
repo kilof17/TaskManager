@@ -14,5 +14,9 @@ namespace TaskManager.Interfaces
         Task<ApiResponse> LoginAsync(UserLogin model);
 
         public Task<ApiResponse> ConfirmEmailAsync(string userId, string token);
+
+        Task<IEnumerable<Group>> GetUserGroupsAsync(string userId);
+
+        Task<IEnumerable<FinishedQuest>> GetUserFinishedQuestsAsync(string userId);
     }
 }

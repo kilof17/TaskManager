@@ -19,22 +19,22 @@ namespace TaskManager.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Quest> GetQuestByIdAsync(int id)
+        public Task<Quest> GetQuestByIdAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse> MarkQuestAsFinishedAsync(int id)
+        public Task<ApiResponse> MarkQuestAsFinishedAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse> MarkQuestInProgressAsync(int id)
+        public Task<ApiResponse> MarkQuestInProgressAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse> RemoveQuestAsync(int id)
+        public Task<ApiResponse> RemoveQuestAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -44,12 +44,12 @@ namespace TaskManager.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse> UnmarkQuestFinishedAsync(int id)
+        public Task<ApiResponse> UnmarkQuestFinishedAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse> UnmarkQuestInProgressAsync(int id)
+        public Task<ApiResponse> UnmarkQuestInProgressAsync(string id)
         {
             throw new NotImplementedException();
         }

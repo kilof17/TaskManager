@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TaskManager.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class IdFromIntToString : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,6 +26,8 @@ namespace TaskManager.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -50,8 +52,7 @@ namespace TaskManager.Migrations
                 name: "Groups",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     GroupName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -63,16 +64,13 @@ namespace TaskManager.Migrations
                 name: "Quests",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     InProgress = table.Column<bool>(type: "bit", nullable: false),
-                    ExpiryTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ExpiryDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Expiry_ISO8601 = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsItExpiried = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Added_ISO8601 = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Points = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -190,15 +188,12 @@ namespace TaskManager.Migrations
                 name: "FinishedQuests",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DoneTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DoneDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Done_ISO8601 = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UsersId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AddDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Added_ISO8601 = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Points = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -235,7 +230,7 @@ namespace TaskManager.Migrations
                 columns: table => new
                 {
                     AspNetUsersId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    GroupsId = table.Column<int>(type: "int", nullable: false)
+                    GroupsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -258,8 +253,8 @@ namespace TaskManager.Migrations
                 name: "GroupQuest",
                 columns: table => new
                 {
-                    GroupsId = table.Column<int>(type: "int", nullable: false),
-                    QuestsId = table.Column<int>(type: "int", nullable: false)
+                    GroupsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    QuestsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {

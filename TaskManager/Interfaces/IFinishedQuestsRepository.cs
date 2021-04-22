@@ -10,6 +10,6 @@ namespace TaskManager.Repositories
 
         Task<IEnumerable<FinishedQuest>> GetUserFinishedQuestsAsync(string userId);
 
-        Task<bool> RemoveFinishedQuestAsync(int id);
+        Task<bool> RemoveFinishedQuestAsync(string id);
     }
 }

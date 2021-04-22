@@ -33,7 +33,7 @@ namespace TaskManager.Repositories
             return FinishedQuests.FindAll(p => p.Users.Id == userId);
         }
 
-        public Task<bool> RemoveFinishedQuestAsync(int id)
+        public Task<bool> RemoveFinishedQuestAsync(string id)
         {
             var index = FinishedQuests.FindIndex(p => p.Id == id);
             if (index > -1)
